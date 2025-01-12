@@ -65,6 +65,23 @@ app.get('/files', (req, res) => {
 	res.status(200).json(files);
 });
 
+app.delete('/files/:filename', (req, res) => {
+	const filePath = `${UPLOAD_DIR}/${req.params.filename}`;
+
+	// Check if the file exists
+	if (!fs.existsSync(filePath)) {
+		return res.status(404).json({ error: 'File not found' });
+	}
+
+	// Attempt to delete the file
+	fs.unlink(filePath, (err) => {
+		if (err) {
+			return res.status(500).json({ error: 'Failed to delete file' });
+		}
+		res.status(200).json({ message: 'File deleted successfully' });
+	});
+});
+
 app.get('/status', (req, res) => {
 	res.send({
 		message: true,
